@@ -8,15 +8,6 @@ const url = 'mongodb+srv://evfuTsraL:goddagTwin3-@cluster0-hhhem.mongodb.net/iss
 let db;
 let aboutMessage = "Issue Tracker API v1.0";
 
-const issueDB = [
-		{
-				id: 1, status: 'New', owner: 'Ravan', effort: 5, created: new Date('2019-01-15'), due: undefined, title: 'Error in console when clicking Add',
-		},
-		{
-				id: 2, status: 'Assigned', owner: 'Eddie', effort: 14, created: new Date('2019-01-16'), due: new Date('2019-02-01'), title: 'Missing bottom border on panel',
-		},
-];
-
 const GraphQLDate = new GraphQLScalarType({
 		name: 'GraphQLDate',
 		description: 'A Date() type in GraphQL as a scalar',
@@ -64,12 +55,22 @@ function issueValidate(issue) {
 		}
 }
 
-function issueAdd(_, { issue }) {
+async function getNextSequence(name) {
+		const result = await db.collection('counters').findOneAndUpdate(
+				{ _id: name },
+				{ $inc: { current: 1 } },
+				{ returnOriginal: false },
+		);
+		return result.value.current;
+}
+
+async function issueAdd(_, { issue }) {
 		issueValidate(issue);
 		issue.created = new Date();
-		issue.id = issueDB.length + 1;
-		issueDB.push(issue);
-		return issue;
+		issue.id = await getNextSequence('issues');
+		const result = await db.collection('issues').insertOne(issue);
+		const savedIssue = await db.collection('issues').findOne({_id: result.insertedId});
+		return savedIssue;
 }
 
 async function issueList() {
