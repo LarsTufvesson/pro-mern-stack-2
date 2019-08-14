@@ -4,17 +4,27 @@
   "description": "Pro MERN Stack UI",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon -w uiserver.js -w .env uiserver.js",
-    "compile": "webpack --mode production",
+		"#start": "UI server. HMR is enabled in dev mode.",
+		"start": "nodemon -w uiserver.js -w .env uiserver.js",
+		"#lint": "Runs ESLint on all relevant files",
+		"lint": "eslint . --ext js,jsx --ignore-pattern public",
+		"#compile": "Generate JS bundles for production. Use with start.",
+		"compile": "webpack --mode production",
+		"#watch": "Compile, and recompile on any changes.",
     "watch": "webpack --watch"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "babel-polyfill": "^6.26.0",
     "dotenv": "^6.2.0",
     "express": "^4.17.1",
     "http-proxy-middleware": "^0.19.1",
-    "nodemon": "^1.19.1"
+    "nodemon": "^1.19.1",
+    "prop-types": "^15.7.2",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0",
+    "whatwg-fetch": "^3.0.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.5.5",
@@ -28,6 +38,8 @@
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-react": "^7.14.3",
     "webpack": "^4.39.1",
-    "webpack-cli": "^3.3.6"
+    "webpack-cli": "^3.3.6",
+    "webpack-dev-middleware": "^3.7.0",
+    "webpack-hot-middleware": "^2.25.0"
   }
 }
