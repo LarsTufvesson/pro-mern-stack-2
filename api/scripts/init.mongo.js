@@ -14,7 +14,11 @@ const issuesDB = [
     effort: 100,
     created: new Date('2019-01-15'),
     due: undefined,
-    title: 'Error in console when clicking Add',
+			title: 'Error in console when clicking Add',
+			description: 'Steps to recreate the problem:'
+					+ '\n1. Refresh the browser.'
+			    + '\n2. Select "New" in the filter'
+			    + '\n3. Refresh the browser again. Note the warning in the console.',
   },
   {
     id: 2,
@@ -23,7 +27,9 @@ const issuesDB = [
     effort: 14,
     created: new Date('2019-01-16'),
     due: new Date('2019-02-01'),
-    title: 'Missing bottom border on panel',
+			title: 'Missing bottom border on panel',
+			description: 'There needs to be a border in the bottom of the panel'
+					+ ' that appears when clicking on Add',
   },
 ];
 
