@@ -9,7 +9,7 @@ import {
 import NumInput from './NumInput.jsx';
 import DateInput from './DateInput.jsx';
 import TextInput from './TextInput.jsx';
-
+import Toast from './Toast.jsx';
 import graphQLFetch from './graphQLFetch.js';
 
 export default class IssueEdit extends React.Component {
@@ -19,12 +19,18 @@ export default class IssueEdit extends React.Component {
       issue: {},
 			invalidFields: {},
 			showingValidation: false,
+			toastVisible: false,
+			toastMessage: '',
+			toastType: 'success',
     };
     this.onChange = this.onChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
 		this.onValidityChange = this.onValidityChange.bind(this);
     this.showValidation = this.showValidation.bind(this);
     this.dismissValidation = this.dismissValidation.bind(this);
+		this.showSuccess = this.showSuccess.bind(this);
+		this.showError = this.showError.bind(this);
+		this.dismissToast = this.dismissToast.bind(this);
   }
 
   componentDidMount() {
@@ -64,6 +70,22 @@ export default class IssueEdit extends React.Component {
 	  this.setState({ showingValidation: false });
 	}
 
+  showSuccess(message) {
+	  this.setState({
+		  toastVisible: true, toastMessage: message, toastType: 'success',
+		});
+	}
+
+  showError(message) {
+	  this.setState({
+		  toastVisible: true, toastMessage: message, toastType: 'danger',
+		});
+	}
+
+  dismissToast() {
+	  this.setState({ toastVisible: false });
+	}
+
   async handleSubmit(e) {
     e.preventDefault();
 		this.showValidation();
@@ -84,10 +106,10 @@ export default class IssueEdit extends React.Component {
     }`;
 
     const { id, created, ...changes } = issue;
-		const data = await graphQLFetch(query, { changes, id });
+		const data = await graphQLFetch(query, { changes, id }, this.showError);
 		if (data) {
 		  this.setState({ issue: data.issueUpdate });
-			alert('Updated issue successfully');
+			this.showSuccess('Updated issue successfully');
 		}
   }
 
@@ -100,7 +122,7 @@ export default class IssueEdit extends React.Component {
     }`;
 
     const { match: { params: { id } } } = this.props;
-    const data = await graphQLFetch(query, { id });
+    const data = await graphQLFetch(query, { id }, this.showError);
 		this.setState({ issue: data ? data.issue : {}, invalidFields: {} });
   }
 
@@ -126,7 +148,8 @@ export default class IssueEdit extends React.Component {
     const { issue: { title, status } } = this.state;
     const { issue: { owner, effort, description } } = this.state;
     const { issue: { created, due } } = this.state;
-
+    const { toastVisible, toastMessage, toastType } = this.state;
+		
     return (
 		  <Panel>
 			  <Panel.Heading>
@@ -247,6 +270,13 @@ export default class IssueEdit extends React.Component {
           {' | '}
           <Link to={`/edit/${id + 1}`}>Next</Link>
 				</Panel.Footer>
+				<Toast
+				  showing={toastVisible}
+					onDismiss={this.dismissToast}
+					bsStyle={toastType}
+				>
+				  {toastMessage}
+				</Toast>
 			</Panel>
     );
   }
