@@ -4,6 +4,8 @@ api/.env
 api/package-lock.json
 ui/package-lock.json
 ui/public/*.js
+ui/public/*.map
 ui/public/dist
+ui/dist
 mongodbshell
 *~
